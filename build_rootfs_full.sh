@@ -14,11 +14,21 @@ packages=(
 	ostree
 	which
 )
+aur_packages=(
+	yay-bin
+)
 
 prepare() {
 	# We need the ostree hook.
 	install -d "$rootfs/etc"
 	install -m 0644 mkinitcpio.conf "$rootfs/etc/"
+}
+
+# This is needed to be able to install AUR packages.
+post_install_early() {
+	echo 'Server = https://geo.mirror.pkgbuild.com/$repo/os/$arch' > /etc/pacman.d/mirrorlist
+	pacman-key --init
+	pacman-key --populate
 }
 
 post_install() {
